@@ -1,12 +1,19 @@
 import { View, Text, TextInput } from 'react-native'
-import React, { useState } from 'react'
-import { Box, Button, Center, Heading, Radio } from 'native-base'
+import React, { useState,useEffect } from 'react'
+import { Box, Button, Center, Heading, Radio, useToast } from 'native-base'
 import {caesarCipherEncode,caesarCipherDecode} from './algos/Calc'
 
 const Home = () => {
     let [val,setVal]=useState('')
     let [k,setK]=useState(0)
     let [selection,setSelection]=useState('')
+    let toast=useToast()
+    useEffect(() => {
+      if(selection=='Caesar Cipher')
+        toast.show({description:'Decoding Caesar Cipher will produce only lower case text',title:'NOTE',duration:2000})
+    
+    }, [selection])
+    
   return (
     <Box>
         <Center>
@@ -24,10 +31,14 @@ const Home = () => {
       <TextInput placeholder='k value' style={{borderWidth:2,borderColor:'black',width:100,height:100}} value={k} onChangeText={(txt)=>setK(txt)} ></TextInput>
       <Button
       onPress={()=>{
-        if(val.substring(0,5)==='#BSC#'){
+          if(val.substring(0,5)==='#BSC#'){
+            //decode
             // start from 6 bcoz, 5th char is ':'
+            if(selection=='Caesar Cipher')
             setVal(caesarCipherDecode(val.substring(6),parseInt(k)))
         }else{
+            //encode
+            if(selection=='Caesar Cipher')
             setVal('#BSC#'+':'+caesarCipherEncode(val,parseInt(k)))
         }
       }}
